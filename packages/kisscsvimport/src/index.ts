@@ -1,5 +1,7 @@
 // 要素のためのクラスを作成
 export class PopupInfo extends HTMLElement {
+  static observedAttributes = ["data-text"];
+
   wrapper: HTMLButtonElement | null = null;
 
   constructor() {

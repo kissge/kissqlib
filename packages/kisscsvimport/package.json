@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "json-2-csv": "^5.6.0",
-    "lit-html": "^3.3.3"
+    "lit": "^3.3.3"
   },
   "devDependencies": {
     "typescript": "^6.0.0",

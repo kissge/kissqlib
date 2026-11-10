@@ -1,14 +1,23 @@
-import { html, render, nothing } from "lit-html";
-import { createRef, ref } from "lit-html/directives/ref.js";
+import { html, nothing, LitElement } from "lit";
+import { createRef, ref } from "lit/directives/ref.js";
 import { parseCSV } from "./parse";
 import style from "./style.css?inline";
+import { customElement, property, state } from "lit/decorators.js";
 
-export class CSVImportDialog extends HTMLElement {
-  static observedAttributes = ["open"];
+@customElement("csv-import-dialog")
+export class CSVImportDialog extends LitElement {
+  @property({ type: Boolean, reflect: true })
+  accessor open: boolean = false;
 
   dialog = createRef<HTMLDialogElement>();
 
+  @state()
+  stage: 1 | 2 = 1;
+
+  @state()
   rawText: string = "";
+
+  @state()
   config: {
     hasHeader: "true" | "false";
     delimiter: "comma" | "tab" | "auto";
@@ -16,40 +25,29 @@ export class CSVImportDialog extends HTMLElement {
     question: string;
     answer: string;
     comment: string;
-  } = {
-    hasHeader: "false",
-    delimiter: "auto",
-    question: "0",
-    answer: "1",
-    comment: "",
-  };
+  } = { hasHeader: "false", delimiter: "auto", question: "0", answer: "1", comment: "" };
 
-  constructor() {
-    super();
+  render() {
+    return html`<dialog closedby="any" ${ref(this.dialog)} @close=${() => (this.open = false)}>
+      ${this.header}${this.stage === 1 ? this.main1 : this.main2}
+      <style>
+        ${style}
+      </style>
+    </dialog>`;
   }
 
-  connectedCallback() {
-    const shadow = this.attachShadow({ mode: "open" });
+  willUpdate(changedProperties: Map<string, any>) {
+    if (!this.dialog.value) {
+      return;
+    }
 
-    render(
-      html`<dialog closedby="any" ${ref(this.dialog)}>
-          ${this.header} ${this.main1} ${this.main2}
-        </dialog>
-
-        <style>
-          ${style}
-        </style>`,
-      shadow,
-    );
-  }
-
-  attributeChangedCallback(name: "open", _oldValue: string | null, newValue: string | null) {
-    if (name === "open") {
-      if (newValue) {
-        this.dialog.value!.classList.remove("stage-2");
-        this.dialog.value!.showModal();
+    if (changedProperties.has("open")) {
+      if (this.open) {
+        this.rawText = "";
+        this.stage = 1;
+        this.dialog.value.showModal();
       } else {
-        this.dialog.value!.close();
+        this.dialog.value.close();
       }
     }
   }
@@ -57,13 +55,16 @@ export class CSVImportDialog extends HTMLElement {
   get header() {
     return html`<header>
       <h1>
-        <div class="shown-1">問題を読み込む</div>
-        <div class="shown-2">
-          <button class="back-btn" @click=${() => this.dialog.value!.classList.remove("stage-2")}>
-            ←
-          </button>
-          読み込み設定
-        </div>
+        ${
+          this.stage === 1
+            ? html`<div>問題を読み込む</div>`
+            : html`
+                <div>
+                  <button class="back-btn" @click=${() => (this.stage = 1)}>←</button>
+                  読み込み設定
+                </div>
+              `
+        }
       </h1>
       <div class="spacer"></div>
       <button class="close-btn" @click=${() => this.dialog.value!.close()}>×</button>
@@ -71,7 +72,7 @@ export class CSVImportDialog extends HTMLElement {
   }
 
   get main1() {
-    return html`<main class="shown-1">
+    return html`<main>
       <div class="input-area">
         <fieldset>
           <legend>ファイルから読み込む</legend>
@@ -93,7 +94,9 @@ export class CSVImportDialog extends HTMLElement {
             autofocus
             rows="5"
             placeholder="ここだよ"
+            .value=${this.rawText}
             @change=${(e: Event) => (this.rawText = (e.currentTarget as HTMLTextAreaElement).value)}
+            @keyup=${(e: Event) => (this.rawText = (e.currentTarget as HTMLTextAreaElement).value)}
           ></textarea>
 
           <p style:font-size="0.8em">
@@ -103,7 +106,14 @@ export class CSVImportDialog extends HTMLElement {
       </div>
 
       <div class="buttons">
-        <button @click=${() => this.clickNextButton()}>
+        <button
+          ?disabled=${!this.rawText.trim()}
+          @click=${() => {
+            this.config = { ...this.config, question: "0", answer: "1", comment: "2" };
+            this.setDelimiter("auto");
+            this.stage = 2;
+          }}
+        >
           データを読み込んで、取り込み方の設定へ進む
         </button>
       </div>
@@ -111,44 +121,116 @@ export class CSVImportDialog extends HTMLElement {
   }
 
   get main2() {
-    return html`<main class="shown-2">
-      <form class="table" @change=${() => this.handleFormChange()}>
+    return html`<main>
+      <form class="table">
         <div>1行目</div>
         <div>
           <label>
-            <input type="radio" name="hasHeader" value="true" />
+            <input
+              type="radio"
+              name="hasHeader"
+              value="true"
+              .checked=${this.config.hasHeader === "true"}
+              @click=${() => {
+                this.config = { ...this.config, hasHeader: "true" };
+              }}
+            />
             ヘッダーとして扱う
           </label>
           <label>
-            <input type="radio" name="hasHeader" value="false" checked />
+            <input
+              type="radio"
+              name="hasHeader"
+              value="false"
+              .checked=${this.config.hasHeader === "false"}
+              @click=${() => {
+                this.config = { ...this.config, hasHeader: "false" };
+              }}
+            />
             問題データの1件目として扱う
           </label>
         </div>
-
         <div>データ形式</div>
         <div>
           <label>
-            <input type="radio" name="delimiter" value="comma" />
+            <input
+              type="radio"
+              name="delimiter"
+              value="comma"
+              .checked=${this.config.delimiter === "comma"}
+              @click=${() => this.setDelimiter("comma")}
+            />
             CSV
           </label>
           <label>
-            <input type="radio" name="delimiter" value="tab" />
+            <input
+              type="radio"
+              name="delimiter"
+              value="tab"
+              .checked=${this.config.delimiter === "tab"}
+              @click=${() => this.setDelimiter("tab")}
+            />
             TSV
           </label>
           <label>
-            <input type="radio" name="delimiter" value="auto" checked />
+            <input
+              type="radio"
+              name="delimiter"
+              value="auto"
+              .checked=${this.config.delimiter === "auto"}
+              @click=${() => this.setDelimiter("auto")}
+            />
             自動判定
           </label>
           <br />
           <br />
           <label>
-            <input type="checkbox" name="googleSheetsMode" />
+            <input
+              type="checkbox"
+              name="googleSheetsMode"
+              .checked=${this.config.googleSheetsMode}
+              @click=${() => {
+                this.config = {
+                  ...this.config,
+                  googleSheetsMode: this.config.googleSheetsMode ? undefined : "on",
+                  delimiter: this.config.googleSheetsMode ? this.config.delimiter : "tab",
+                };
+              }}
+            />
             Google Sheetsからコピペした、ぶっ壊れているかもしれないデータをなるべくいい感じにする
           </label>
         </div>
 
         <div>列の対応</div>
-        <div class="table-wrapper" id="row-mapping"></div>
+        <div class="table-wrapper">
+          ${(
+            [
+              { name: "question", label: "質問" },
+              { name: "answer", label: "回答" },
+              { name: "comment", label: "コメント" },
+            ] as const
+          ).map(
+            ({ name, label }) =>
+              html` <div>${label}</div>
+                <div>
+                  <select
+                    name="${name}"
+                    @change=${(e: Event) => {
+                      const value = (e.currentTarget as HTMLSelectElement).value;
+                      this.config = { ...this.config, [name]: value };
+                    }}
+                  >
+                    <option value="" .selected=${this.config[name] === ""}>なし</option>
+                    ${this.rowLabels.map(
+                      ({ key, label }) =>
+                        html`<option value="${key}" .selected=${this.config[name] === String(key)}>
+                          ${label}
+                        </option>`,
+                    )}
+                  </select>
+                </div>`,
+          )}
+        </div>
       </form>
 
       <div class="preview">
@@ -162,12 +244,30 @@ export class CSVImportDialog extends HTMLElement {
               <th>コメント</th>
             </tr>
           </thead>
-          <tbody id="preview-tbody"></tbody>
+          <tbody>
+            ${this.table.map(
+              ({ question, answer, comment }) => html`
+                <tr>
+                  <td><div>${question}</div></td>
+                  <td><div>${answer}</div></td>
+                  <td><div>${comment}</div></td>
+                </tr>
+              `,
+            )}
+          </tbody>
         </table>
       </div>
 
       <div class="buttons">
-        <button @click=${() => this.import()}>取り込む</button>
+        <span>
+          ${this.table.length === 0 ? "取り込むデータがありません。" : this.config.question === "" || this.config.answer === "" ? "質問と回答の列を選択してください。" : nothing}
+        </span>
+        <button
+          ?disabled=${this.table.length === 0 || this.config.question === "" || this.config.answer === ""}
+          @click=${this.import}
+        >
+          取り込む
+        </button>
       </div>
     </main>`;
   }
@@ -208,8 +308,8 @@ export class CSVImportDialog extends HTMLElement {
   get table() {
     return this.parsed.slice(this.config.hasHeader === "true" ? 1 : 0).map((row, id) => ({
       id: id + 1,
-      question: row[Number(this.config.question)],
-      answer: row[Number(this.config.answer)],
+      question: !this.config.question ? "" : row[Number(this.config.question)],
+      answer: !this.config.answer ? "" : row[Number(this.config.answer)],
       comment: !this.config.comment ? "" : row[Number(this.config.comment)],
     }));
   }
@@ -227,81 +327,16 @@ export class CSVImportDialog extends HTMLElement {
     reader.readAsText(file);
   }
 
-  clickNextButton() {
-    if (!this.rawText) {
-      alert("ファイルを選択するか、CSVまたはTSV形式のデータを貼り付けてください。");
-      return;
-    }
+  setDelimiter(delimiter: "comma" | "tab" | "auto") {
+    const googleSheetsMode = delimiter !== "tab" ? undefined : this.config.googleSheetsMode;
 
-    this.handleFormChange();
+    this.config = { ...this.config, delimiter, googleSheetsMode };
 
-    this.dialog.value!.classList.add("stage-2");
-  }
-
-  handleFormChange() {
-    const form = this.dialog.value!.querySelector("form")!;
-    const formData = new FormData(form);
-    const newConfig = {
-      ...this.config,
-      ...Object.fromEntries(formData.entries()),
-    } as typeof this.config;
-
-    if (!this.config.googleSheetsMode && newConfig.googleSheetsMode) {
-      if (newConfig.delimiter !== "tab") {
-        newConfig.delimiter = "tab";
-        (form.querySelector('input[value="tab"]') as HTMLInputElement).checked = true;
-      }
-    } else if (this.config.delimiter === "tab" && newConfig.delimiter !== "tab") {
-      if (newConfig.googleSheetsMode) {
-        newConfig.googleSheetsMode = undefined;
-        (form.querySelector('input[name="googleSheetsMode"') as HTMLInputElement).checked = false;
+    for (const name of ["question", "answer", "comment"] as const) {
+      if (!this.rowLabels.some(({ key }) => key === Number(this.config[name]))) {
+        this.config = { ...this.config, [name]: "" };
       }
     }
-
-    this.config = newConfig;
-
-    render(
-      html`${(
-        [
-          { name: "question", label: "質問" },
-          { name: "answer", label: "回答" },
-          { name: "comment", label: "コメント" },
-        ] as const
-      ).map(
-        ({ name, label }) => html`
-          <div>${label}</div>
-          <div>
-            <select name="${name}">
-              ${
-                name === "comment"
-                  ? html`<option value="" ?selected=${this.config[name] === ""}>なし</option>`
-                  : nothing
-              }
-              ${this.rowLabels.map(
-                ({ key, label }) =>
-                  html`<option value="${key}" ?selected=${this.config[name] === String(key)}>
-                    ${label}
-                  </option>`,
-              )}
-            </select>
-          </div>
-        `,
-      )}`,
-      this.dialog.value!.querySelector("#row-mapping")!,
-    );
-
-    render(
-      html`${this.table.map(
-        ({ question, answer, comment }) => html`
-          <tr>
-            <td><div>${question}</div></td>
-            <td><div>${answer}</div></td>
-            <td><div>${comment}</div></td>
-          </tr>
-        `,
-      )}`,
-      this.dialog.value!.querySelector("#preview-tbody")!,
-    );
   }
 
   import() {

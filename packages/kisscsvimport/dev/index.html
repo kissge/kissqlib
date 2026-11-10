@@ -16,6 +16,7 @@
     <script>
       document.getElementById("csvImportDialog").addEventListener("import", (event) => {
         console.log(event.detail);
+        alert(JSON.stringify(event.detail, null, 2));
       });
     </script>
   </body>

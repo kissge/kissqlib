@@ -38,29 +38,46 @@ function parseGoogleSheetsText(rawInput: string): Record<number, string>[] {
     let eol = false;
     // 行を読み始める
     for (;;) {
-      const chunk = rawInput.match(/^(.*?)(\t|$)/m);
+      const chunk = rawInput.match(/^(.+?)(\t|$)/m);
 
       if (!chunk) {
+        results.push(line);
         break;
       }
 
       if (chunk[1].startsWith('"')) {
         // ここからダブルクオート処理
-        rawInput = rawInput.slice(chunk[0].length);
+        rawInput = rawInput.slice(chunk[0].length + (chunk[2] === "\t" ? 0 : 1));
         let cell = chunk[1].slice(1);
+
+        if (cell.endsWith('"')) {
+          line.push(cell.slice(0, -1));
+
+          if (chunk[2] === "\t") {
+            // まだ行は終わっていない
+            continue;
+          } else {
+            // 行が終わった
+            results.push(line);
+            eol = true;
+            break;
+          }
+        }
+
         for (;;) {
           const firstLine = rawInput.match(/^.*$/m)!;
           const cellEnd = firstLine[0].match(/"(\t|$)/m);
+
           if (cellEnd) {
             cell += "\n" + firstLine[0].slice(0, cellEnd.index!);
-            rawInput = rawInput.slice(cellEnd.index! + 1);
+            rawInput = rawInput.slice(cellEnd.index! + 2);
+            line.push(cell);
 
             if (cellEnd[1] === "\t") {
               // まだ行は終わっていない
-              continue;
+              break;
             } else {
               // 行が終わった
-              line.push(cell);
               eol = true;
               results.push(line);
               rawInput = rawInput.slice(1);

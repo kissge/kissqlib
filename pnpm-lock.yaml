@@ -34,31 +34,6 @@ importers:
         specifier: ^5.1.2
         version: 5.1.2(rolldown@1.2.16)(typescript@6.0.3)(vite@8.3.6)
 
-  packages/kisscsvimport_bak:
-    devDependencies:
-      typescript:
-        specifier: ^5.0.0
-        version: 5.9.3
-
-  packages/kisscsvimport_bak2:
-    dependencies:
-      json-2-csv:
-        specifier: ^5.6.0
-        version: 5.6.0
-      lit:
-        specifier: ^3.3.3
-        version: 3.3.3
-      lit-html:
-        specifier: ^3.3.3
-        version: 3.3.3
-    devDependencies:
-      typescript:
-        specifier: ^5.0.0
-        version: 5.9.3
-      vite-plugin-dts:
-        specifier: ^5.1.2
-        version: 5.1.2(rolldown@1.2.16)(typescript@5.9.3)(vite@8.3.6)
-
   packages/kissunlocklib:
     devDependencies:
       typescript:
@@ -1037,15 +1012,6 @@ snapshots:
     dependencies:
       '@volar/source-map': 2.4.31
 
-  '@volar/language-service@2.4.31(typescript@5.9.3)':
-    dependencies:
-      '@volar/language-core': 2.4.31
-      vscode-languageserver-protocol: 3.18.5
-      vscode-languageserver-textdocument: 1.0.16
-      vscode-uri: 3.2.0
-    optionalDependencies:
-      typescript: 5.9.3
-
   '@volar/language-service@2.4.31(typescript@6.0.3)':
     dependencies:
       '@volar/language-core': 2.4.31
@@ -1056,15 +1022,6 @@ snapshots:
       typescript: 6.0.3
 
   '@volar/source-map@2.4.31': {}
-
-  '@volar/typescript@2.4.31(typescript@5.9.3)':
-    dependencies:
-      '@volar/language-core': 2.4.31
-      '@volar/language-service': 2.4.31(typescript@5.9.3)
-      path-browserify: 1.0.1
-      vscode-uri: 3.2.0
-    optionalDependencies:
-      typescript: 5.9.3
 
   '@volar/typescript@2.4.31(typescript@6.0.3)':
     dependencies:
@@ -1309,24 +1266,6 @@ snapshots:
 
   ufo@1.6.4: {}
 
-  unplugin-dts@1.1.2(rolldown@1.2.16)(typescript@5.9.3)(vite@8.3.6):
-    dependencies:
-      '@rollup/pluginutils': 5.5.1
-      '@volar/typescript': 2.4.31(typescript@5.9.3)
-      compare-versions: 6.1.1
-      debug: 4.4.3
-      glob-to-regexp: 0.4.1
-      kolorist: 1.8.0
-      local-pkg: 1.2.1
-      magic-string: 0.30.21
-      typescript: 5.9.3
-      unplugin: 2.3.11
-    optionalDependencies:
-      rolldown: 1.2.16
-      vite: 8.3.6
-    transitivePeerDependencies:
-      - supports-color
-
   unplugin-dts@1.1.2(rolldown@1.2.16)(typescript@6.0.3)(vite@8.3.6):
     dependencies:
       '@rollup/pluginutils': 5.5.1
@@ -1351,20 +1290,6 @@ snapshots:
       acorn: 8.19.0
       picomatch: 4.0.7
       webpack-virtual-modules: 0.6.2
-
-  vite-plugin-dts@5.1.2(rolldown@1.2.16)(typescript@5.9.3)(vite@8.3.6):
-    dependencies:
-      unplugin-dts: 1.1.2(rolldown@1.2.16)(typescript@5.9.3)(vite@8.3.6)
-    optionalDependencies:
-      vite: 8.3.6
-    transitivePeerDependencies:
-      - '@rspack/core'
-      - '@vue/language-core'
-      - esbuild
-      - rolldown
-      - supports-color
-      - typescript
-      - webpack
 
   vite-plugin-dts@5.1.2(rolldown@1.2.16)(typescript@6.0.3)(vite@8.3.6):
     dependencies:

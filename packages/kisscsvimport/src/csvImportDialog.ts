@@ -349,3 +349,10 @@ export class CSVImportDialog extends LitElement {
     this.dispatchEvent(new CustomEvent("import", { detail: this.table }));
   }
 }
+
+export interface ImportedQuestion {
+  id: number;
+  question: string;
+  answer: string;
+  comment: string;
+}

@@ -7,3 +7,4 @@ declare global {
 }
 
 export { CSVImportDialog };
+export type { ImportedQuestion } from "./csvImportDialog";

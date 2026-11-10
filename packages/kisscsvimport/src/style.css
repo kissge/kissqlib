@@ -44,9 +44,14 @@ input[type="file"] {
   font-size: 1em;
 }
 
+input[type="checkbox"] {
+  flex: 0 0 auto;
+}
+
 textarea {
   width: 15em;
   max-width: 100%;
+  font-size: 1em;
   box-sizing: border-box;
 }
 
@@ -82,6 +87,10 @@ label:has(input[type="checkbox"]) {
   span {
     color: red;
   }
+}
+
+button {
+  font-size: 1em;
 }
 
 .input-area {

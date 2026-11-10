@@ -28,7 +28,7 @@ export class CSVImportDialog extends LitElement {
   } = { hasHeader: "false", delimiter: "auto", question: "0", answer: "1", comment: "" };
 
   render() {
-    return html`<dialog closedby="any" ${ref(this.dialog)} @close=${() => (this.open = false)}>
+    return html`<dialog closedby="any" ${ref(this.dialog)} @close=${this.onClose}>
       ${this.header}${this.stage === 1 ? this.main1 : this.main2}
       <style>
         ${style}
@@ -312,6 +312,11 @@ export class CSVImportDialog extends LitElement {
       answer: !this.config.answer ? "" : row[Number(this.config.answer)],
       comment: !this.config.comment ? "" : row[Number(this.config.comment)],
     }));
+  }
+
+  onClose() {
+    this.open = false;
+    this.dispatchEvent(new CustomEvent("close"));
   }
 
   handleFileInput(element: HTMLInputElement) {

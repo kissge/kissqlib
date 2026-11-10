@@ -7,7 +7,7 @@ import { customElement, property, state } from "lit/decorators.js";
 @customElement("csv-import-dialog")
 export class CSVImportDialog extends LitElement {
   @property({ type: Boolean, reflect: true })
-  accessor open: boolean = false;
+  open: boolean = false;
 
   dialog = createRef<HTMLDialogElement>();
 

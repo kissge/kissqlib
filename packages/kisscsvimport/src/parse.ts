@@ -80,7 +80,6 @@ function parseGoogleSheetsText(rawInput: string): Record<number, string>[] {
               // 行が終わった
               eol = true;
               results.push(line);
-              rawInput = rawInput.slice(1);
               break;
             }
           } else if (!rawInput) {

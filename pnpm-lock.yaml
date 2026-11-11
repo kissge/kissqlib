@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@himynameisdave/oxfmt-config':
+        specifier: ^1.1.0
+        version: 1.1.0(oxfmt@0.76.0)
       oxfmt:
         specifier: ^0.76.0
         version: 0.76.0
@@ -41,6 +44,11 @@ importers:
         version: 5.9.3
 
 packages:
+
+  '@himynameisdave/oxfmt-config@1.1.0':
+    resolution: {integrity: sha512-RlT2gTZQtHt+5A3Yk0ogoIDfWo9/VtttIzhGyZRDscJAmzTMPyzpZCDA6xxThldYF7j8tUdCNGru5kK3vfjhjg==}
+    peerDependencies:
+      oxfmt: '>=0.74.0 <1'
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -809,6 +817,10 @@ packages:
     resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
 
 snapshots:
+
+  '@himynameisdave/oxfmt-config@1.1.0(oxfmt@0.76.0)':
+    dependencies:
+      oxfmt: 0.76.0
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:

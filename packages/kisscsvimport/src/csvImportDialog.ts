@@ -1,8 +1,10 @@
 import { html, nothing, LitElement } from "lit";
-import { createRef, ref } from "lit/directives/ref.js";
-import { parseCSV } from "./parse";
-import style from "./style.css?inline";
 import { customElement, property, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
+
+import { parseCSV } from "./parse";
+
+import style from "./style.css?inline";
 
 @customElement("csv-import-dialog")
 export class CSVImportDialog extends LitElement {

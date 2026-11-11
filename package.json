@@ -2,11 +2,13 @@
   "name": "kissqlib",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "lint": "oxlint",
     "format": "oxfmt"
   },
   "devDependencies": {
+    "@himynameisdave/oxfmt-config": "^1.1.0",
     "oxfmt": "^0.76.0",
     "oxlint": "^1.91.0"
   }

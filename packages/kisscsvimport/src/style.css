@@ -10,6 +10,9 @@ dialog[open] {
   border-radius: 0.5em;
   width: min(90%, 40em);
   max-height: 90dvh;
+
+  container-type: inline-size;
+  container-name: dialog;
 }
 
 header {
@@ -40,7 +43,7 @@ p {
 }
 
 input[type="file"] {
-  width: 15em;
+  width: 100%;
   font-size: 1em;
 }
 
@@ -107,6 +110,14 @@ button {
   & > div {
     flex: 0 0 auto;
     text-align: center;
+  }
+}
+
+@container dialog (width < 30em) {
+  .input-area {
+    & > div {
+      flex: 0 0 100%;
+    }
   }
 }
 

@@ -1,24 +1,24 @@
 dialog[open] {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 1em;
+  width: min(90%, 40em);
+  max-height: 90dvh;
+  container-name: dialog;
+
+  container-type: inline-size;
   font-size: 1em;
 
   cursor: default;
-  box-sizing: border-box;
-  box-shadow: 8px 8px 10px 0 #444;
   border-radius: 0.5em;
-  width: min(90%, 40em);
-  max-height: 90dvh;
-
-  container-type: inline-size;
-  container-name: dialog;
+  box-shadow: 8px 8px 10px 0 #444;
 }
 
 header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 h1 {
@@ -28,8 +28,8 @@ h1 {
 
   div {
     display: flex;
-    align-items: bottom;
     gap: 0.25em;
+    align-items: bottom;
     line-height: 1;
   }
 }
@@ -52,10 +52,10 @@ input[type="checkbox"] {
 }
 
 textarea {
+  box-sizing: border-box;
   width: 15em;
   max-width: 100%;
   font-size: 1em;
-  box-sizing: border-box;
 }
 
 label {
@@ -64,27 +64,27 @@ label {
 
 label:has(input[type="checkbox"]) {
   display: flex;
-  align-items: baseline;
   gap: 0.4em;
+  align-items: baseline;
 }
 
 .back-btn,
 .close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 2em;
   height: 2em;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid #ccc;
-  border-radius: 3em;
   font-size: 0.6em;
   font-weight: bold;
+  border: 2px solid #ccc;
+  border-radius: 3em;
 }
 
 .buttons {
   display: flex;
-  justify-content: end;
   gap: 0.5em;
+  justify-content: end;
   margin-top: 1em;
 
   span {
@@ -132,13 +132,13 @@ button {
 
   > :nth-child(2n + 1) {
     display: flex;
-    justify-content: end;
     align-items: center;
-    border-right: 1px solid #ccc;
-    padding-left: 0.6em;
+    justify-content: end;
     padding-right: 0.6em;
-    font-weight: bold;
+    padding-left: 0.6em;
     font-size: 0.6666em;
+    font-weight: bold;
+    border-right: 1px solid #ccc;
   }
 
   > :nth-child(2n + 2) {
@@ -173,10 +173,10 @@ select {
 }
 
 .preview {
-  overflow-y: scroll;
   min-height: 10em;
   max-height: 20em;
   padding: 1em;
+  overflow-y: scroll;
   font-size: 0.6em;
 
   table {
@@ -185,19 +185,19 @@ select {
 
     th,
     td {
-      border: 1px solid #ccc;
+      max-width: 10em;
       padding: 0.25em 0.5em;
       text-align: left;
-      max-width: 10em;
+      border: 1px solid #ccc;
 
       div {
         display: -webkit-box;
-        -webkit-box-orient: vertical;
-        line-clamp: 2;
-        -webkit-line-clamp: 2;
-        white-space: wrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        white-space: wrap;
+        -webkit-box-orient: vertical;
       }
     }
   }

@@ -4,12 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "oxlint",
-    "format": "oxfmt"
+    "lint": "oxlint && stylelint **/*.css",
+    "format": "oxfmt && stylelint --fix **/*.css"
   },
   "devDependencies": {
     "@himynameisdave/oxfmt-config": "^1.1.0",
     "oxfmt": "^0.76.0",
-    "oxlint": "^1.91.0"
+    "oxlint": "^1.91.0",
+    "stylelint": "^18.0.0",
+    "stylelint-config-recess-order": "^7.10.0",
+    "stylelint-order": "^8.1.3"
   }
 }
